@@ -228,7 +228,6 @@ function love.keypressed(key)
         move_perso(wanted_nextpos, perso.up)
       elseif key == "down" then
         local wanted_nextpos = {line = perso.line-1, column = perso.column}
-        print("wanted_next c : ")
         move_perso(wanted_nextpos, perso.down)
       elseif key == "right" then
         local wanted_nextpos = {line = perso.line, column = perso.column-1}
@@ -251,6 +250,7 @@ function love.keypressed(key)
             if objects[i].line == prec_pos.line and objects[i].column == prec_pos.column then
               objects[i].id = objects[i].id+1
               Level.current_level.nb_buttons_succed = Level.current_level.nb_buttons_succed-1
+              print("box out button")
               map.map_objects[prec_pos.line][prec_pos.column] = objects[i].id
               objects[i].image = tile_set[objects[i].id].image
               break
@@ -264,6 +264,7 @@ function love.keypressed(key)
             if (objects[i].id == 9 or objects[i].id == 11) then
               objects[i].id = objects[i].id-1
               Level.current_level.nb_buttons_succed = Level.current_level.nb_buttons_succed+1
+              print("box in button")
               map.map_objects[perso.line][perso.column] = objects[i].id
               objects[i].image = tile_set[objects[i].id].image
             end
@@ -329,7 +330,7 @@ function inScreen(pLine, pColumn)
     pColumn>=1)
 end
 
-function canPass(nextPos)
+function canPass(nextPos, id)
   if (lunar_mode)then return false end
   if (
     nextPos.line<=map.nb_tile_height and 
@@ -337,6 +338,10 @@ function canPass(nextPos)
     nextPos.column<=map.nb_tile_width and
     nextPos.column>=1
     ) then
+    
+    if (Tile.isPerso(id) and map.map_set[nextPos.line][nextPos.column] == 3) then
+      return false
+    end
     
     if ( not(
       (
@@ -376,6 +381,7 @@ function loadLevel()
   
   Level.current_level.gate.image = Level.current_level.gate.images.close
   Level.current_level.nb_buttons_succed = 0
+  print("init buttons succed")
     
   local scale_x = 4
   local scale_y = scale_x
@@ -476,10 +482,10 @@ end
 
 
 function move_perso(wanted_nextpos, fctMove)
-  local CanPass = canPass(wanted_nextpos)
+  local CanPass = canPass(wanted_nextpos, perso.id)
   if (CanPass) then
     if (map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 6 or map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 7) then
-      CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column})
+      CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column}, 6)
     end
   end
   local fall = false
@@ -502,7 +508,7 @@ function move_perso(wanted_nextpos, fctMove)
     return false
   end
   
- if (CanPass) then
+  if (CanPass) then
     local diff_c = 0
     local diff_l = 0
     glass_under = map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 4
@@ -513,16 +519,14 @@ function move_perso(wanted_nextpos, fctMove)
     diff_l = perso.line-diff_l
     wanted_nextpos.line = wanted_nextpos.line+diff_l
     wanted_nextpos.column = wanted_nextpos.column+diff_c
-    CanPass = canPass({line = wanted_nextpos.line, column = wanted_nextpos.column})
+    CanPass = canPass({line = wanted_nextpos.line, column = wanted_nextpos.column}, perso.id)
     if (CanPass) then
       if (map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 6 or map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 7) then
-        CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column})
+        CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column}, 6)
       end
     end
     
     while (CanPass and glass_under) do
-      print("started ! ")
-      print("wanted next : "..wanted_nextpos.line..", "..wanted_nextpos.column)
       if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 4) then
         diff_c = perso.column
         diff_l = perso.line
@@ -537,13 +541,13 @@ function move_perso(wanted_nextpos, fctMove)
         break 
       end
             
-      CanPass = canPass({line = wanted_nextpos.line, column = wanted_nextpos.column})
+      CanPass = canPass({line = wanted_nextpos.line, column = wanted_nextpos.column}, perso.id)
       if (not CanPass )then
         print("cant pass : "..wanted_nextpos.line..", "..wanted_nextpos.column)
       end
       if (CanPass) then
         if (map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 6 or map.map_objects[perso.line][wanted_nextpos.column] == 7) then
-          CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column})
+          CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column}, 6)
         end
       end
       if CanPass then
@@ -556,9 +560,6 @@ function move_perso(wanted_nextpos, fctMove)
       end
       
       
-    end
-    if (not canPass )then
-      print("cant pass")
     end
     
   end

@@ -47,11 +47,9 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
   _tile.falled = false
   _tile.update_z = function()
     _tile.z = _tile.map_start.y-_tile.pos.y
-    print("iofdjkdslk ".._tile.id)
     if (_Tile.isBox(_tile.id)) then
       _tile.z = _tile.map_start.y-(_tile.pos.y+_tile.image:getHeight()*0.6*_Tile.scale.y) 
     elseif (_Tile.isObject(_tile.id))then
-      print("iofdjkdslk")
       _tile.z = _tile.map_start.y-(_tile.pos.y+_tile.image:getHeight()*0.15*_Tile.scale.y) 
     end
   end
