@@ -33,8 +33,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   _perso.ease = {start = {x = 0, y = 0}, start_time = 0, time = 0, offset = {x = 0, y = 0}, duration = 50, fct = persoMovesEase}
   
   _perso.map_start = map_start
-  _perso.tmp_co = _perso.image:getHeight()*0.5*p_Tile.scale.y
-  _perso.z = -1000
+  _perso.z = -10000
   
   _perso.falled = false
   
@@ -346,11 +345,23 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     end
   end
   
-  _perso.fall = function()
+  _perso.fall = function(type_fall)
     _perso.falled = true
     _perso.moving = false
     _perso.move()
-    perso.z = _perso.map_start.y-(_perso.pos_goals[#_perso.pos_goals].y+_perso.tmp_co)-550
+    local coeff = 1000
+    if (type_fall == "hole") then
+      coeff = 1000
+      print("holejf")
+    end
+    if (type_fall == "border")then 
+      if (_perso.line > _Perso.map.nb_tile_height or _perso.column > _Perso.map.nb_tile_width)then
+        coeff = -10000
+      end
+    end
+   
+    _perso.z = _perso.map_start.y-(_perso.pos_goals[#_perso.pos_goals].y*1*_Tile.scale.y)-coeff 
+     print("perso.z : ".._perso.z)
     _perso.pos_goals[#_perso.pos_goals].y = _perso.pos_goals[#_perso.pos_goals].y+1000
     _perso.ease.duration = 2000
     _perso.ease.fct = persoFallEase

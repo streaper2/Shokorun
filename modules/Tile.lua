@@ -46,11 +46,9 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
   
   _tile.falled = false
   _tile.update_z = function()
-    _tile.z = _tile.map_start.y-_tile.pos.y
+    _tile.z = _tile.map_start.y-(_tile.pos.y*1*_Tile.scale.y)
     if (_Tile.isBox(_tile.id)) then
-      _tile.z = _tile.map_start.y-(_tile.pos.y+_tile.image:getHeight()*0.6*_Tile.scale.y) 
-    elseif (_Tile.isObject(_tile.id))then
-      _tile.z = _tile.map_start.y-(_tile.pos.y+_tile.image:getHeight()*0.15*_Tile.scale.y) 
+      _tile.z = _tile.map_start.y-(_tile.pos.y*1*_Tile.scale.y)-150
     end
   end
   _tile.update = function(map_start)
@@ -248,7 +246,7 @@ _Tile.isTileGround = function(id)
 end
 
 _Tile.isObject = function(id)
-  return id > 5 and id <= #_Tile.tile_set
+  return (id > 5 and id <= #_Tile.tile_set) or _Tile.isPerso(id)
 end
 
 return _Tile

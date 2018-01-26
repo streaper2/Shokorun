@@ -86,13 +86,14 @@ function love.update(dt)
         objects[i].exist = false
         table.remove(objects, i)
         i = i-1
-        print("pio")
       end
     end
     
     for i = 1, #tiles_ground do
-      if (not tiles_ground[i].inhole.exist and tiles_ground[i].object_falled) then
-        tiles_ground[i].object_falled = false
+      tiles_ground[i].update(map_start)
+      if (not tiles_ground[i].inhole.exist and tiles_ground[i].object_inhole) then
+        print("tiles_ground delte in hole: "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id)
+        tiles_ground[i].object_inhole = false
         tiles_ground[i].inhole = {exist = false}
       end
     end
@@ -296,11 +297,10 @@ function love.keypressed(key)
           objects[i].fall()
           for j = 1, #tiles_ground do
             if tiles_ground[j].line == objects[i].line and tiles_ground[j].column == objects[i].column then
-              tiles_ground[j].object_falled = true
-              print("fhdjshfkjds")
+              tiles_ground[j].object_inhole = true
               tiles_ground[j].inhole = objects[i]
+              print("tiles_ground : "..tiles_ground[j].inhole.id)
               tiles_ground[j].inhole.exist = true
-              table.insert(tiles_ground, j, objects[i])
               break
             end
           end
@@ -489,10 +489,13 @@ function move_perso(wanted_nextpos, fctMove)
     end
   end
   local fall = false
+  local type_fall = ""
   if (not inScreen(wanted_nextpos.line, wanted_nextpos.column)) then
     fall = true
+    type_fall = "border"
   elseif (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 0 or map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5) then 
     fall = true
+    if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5)then type_fall = "hole" end
   end
   
   if (fall) then
@@ -504,7 +507,17 @@ function move_perso(wanted_nextpos, fctMove)
     perso.pos.y = perso.pos_goals[1].y
     perso.ease.fct = _Tile.fallEase
     table.remove(perso.pos_goals, 1)
-    perso.fall()
+    perso.fall(type_fall)
+    for i = 1, #tiles_ground do
+      if (tiles_ground[i].line == wanted_nextpos.line and tiles_ground[i].column == wanted_nextpos.column) then
+        tiles_ground[i].object_inhole = true
+        tiles_ground[i].inhole = perso
+        
+        print("tiles_ground : "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id..", z : "..tiles_ground[i].z)
+        tiles_ground[i].inhole.exist = true
+      end
+    end
+    
     return false
   end
   
