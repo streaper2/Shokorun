@@ -585,6 +585,13 @@ function move_perso(wanted_nextpos, fctMove)
         diff_l = perso.line-diff_l
         wanted_nextpos.line = wanted_nextpos.line+diff_l
         wanted_nextpos.column = wanted_nextpos.column+diff_c
+        if (Level.current_level.nb_buttons_succed == Level.current_level.nb_buttons and 
+            (perso.line == Level.current_level.gate.line and perso.column == Level.current_level.gate.column)
+          ) then
+          
+          lunar_mode = true
+          return false
+        end
       end
       if (diff_c == 0 and diff_l == 0)then 
         print("end 1  diff l, c : "..diff_l..", "..diff_c)
