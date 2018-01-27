@@ -64,7 +64,8 @@ function love.load()
   levelSelect:load()
   loadLevel()
   pause:load()
-  
+  plouf = love.audio.newSource("musics/plouf1.ogg", "static")
+  move = love.audio.newSource("musics/move.ogg", "static")
 end
 
 ------------------------------------------------------
@@ -117,16 +118,12 @@ function love.update(dt)
     end
     
     if (not perso.moving and perso.falled) then
-      perso = Perso.newPerso(map_start, Level.current_level.pStart.line, Level.current_level.pStart.column, {up = "images/hero/hero_frontr.png", down ="images/hero/hero_backr.png"}, Tile, map.pos_start)
+      loadLevel()
     end
     
     camera.update()
     
     updateDrawList()
-    
-    if (not inScreen(perso.line, perso.column) and not perso.moving) then
-      perso = Perso.newPerso(map_start, Level.current_level.pStart.line, Level.current_level.pStart.column, {up = "images/hero/hero_frontr.png", down ="images/hero/hero_backr.png"}, Tile, map.pos_start)
-    end
 
 	end  
 	  

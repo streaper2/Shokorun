@@ -74,6 +74,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   end
   
   _perso.move = function() 
+    move:play()
     _perso.pos_goals[#_perso.pos_goals+1] = {x = 0, y = 0}
     _perso.pos_goals[#_perso.pos_goals] = _Perso.TabPos2Pos(perso.line, perso.column, _perso.tile_width, _perso.tile_height, _perso.pos_start)
     _perso.pos_goals[#_perso.pos_goals].x = _perso.pos_goals[#_perso.pos_goals].x+_perso.offset.x
@@ -327,12 +328,14 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
           pObjects[i].id = 12
           pObjects[i].image = pMap.tile_set[12].image
           pMap.map_set[pos_case.line][pos_case.column] = -1
+          plouf:play()
         elseif (pMap.map_set[pos_case.line][pos_case.column] == 3 and pObjects[i].id == 7)then
           if (pMap.map_objects == pObjects[i].id) then
             pMap.map_objects[_perso.line][_perso.column] = 0
           end
           table.remove(pObjects, i)
           size = size-1
+          plouf:play()
           break
         end
         if (pMap.map_set[pos_case.line][pos_case.column] == 0) then

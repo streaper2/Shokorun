@@ -47,8 +47,10 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
   _tile.falled = false
   _tile.update_z = function()
     _tile.z = _tile.map_start.y-(_tile.pos.y*0.1*_Tile.scale.y)
-    if (_Tile.isBox(_tile.id) or _tile.id == 12) then
+    if (_Tile.isBox(_tile.id)) then
       _tile.z = _tile.map_start.y-(_tile.pos.y*0.1*_Tile.scale.y)-15
+    elseif (_tile.id == 12) then
+      _tile.z = _tile.map_start.y-(_tile.pos.y*0.1*_Tile.scale.y)-10
     end
   end
   _tile.update = function(map_start)
