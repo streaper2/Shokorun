@@ -29,6 +29,7 @@ pause = require("modules/Pause")
 --=                TABLE & VAR                     =--
 ------------------------------------------------------
 
+
 tiles_ground = {}
 objects = {}
 tile_set = {}
@@ -211,6 +212,7 @@ function love.keypressed(key)
     mainMenu:controller(key)
   elseif currentScene == "LEVELSELECT" then
     levelSelect:controller(key)
+    Level.index_level = levelSelect:getVal()
 	elseif currentScene == "MAINGAME" then  -- IN GAME CONTROLL
     pause:ingame(key)
     if pause.enable == false then
@@ -280,7 +282,6 @@ function love.keypressed(key)
       end
       
       if (Level.current_level.nb_buttons_succed == Level.current_level.nb_buttons) then
-        print("finish ca mere!!")
         Level.current_level.gate.image = Level.current_level.gate.images.open
       else
         Level.current_level.gate.image = Level.current_level.gate.images.close

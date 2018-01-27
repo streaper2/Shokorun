@@ -17,7 +17,7 @@ box wood floating -- 12
 box stone floating-- 13
 ]]
 
-
+--[[
 lvl.set = {
   {1, 1, 1},
   {1, 1, 1},
@@ -28,6 +28,22 @@ lvl.objects = {
   {0, 0, 0},
   {0, 0, 0},
   {0, 0, 0},
+}]]
+
+lvl.set = {
+  {1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 3, 1},
+  {1, 1, 1, 1, 1, 1},
+  {1, 1, 1, 1, 1, 1}
+}
+
+lvl.objects = {
+  {0, 0, 0, 0, 0,0},
+  { 0, 0, 0, 6, 11, 0},
+  { 0, 0, 0, 0, 0, 0},
+  { 0, 0, 0, 0, 7, 0},
+  {0, 0, 0, 0, 0,0}
 }
 
 
@@ -36,7 +52,7 @@ lvl.pStart = {line = 1, column = 1}
 lvl.move = {gold = 10, silver = 15, wood = 25 }
 
 lvl.gate = {}
-lvl.gate.line = 2
+lvl.gate.line = 3
 lvl.gate.column = 2
 
 lvl.gate.pos = {x = 0, y = 0}

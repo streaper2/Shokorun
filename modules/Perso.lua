@@ -76,7 +76,6 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   _perso.move = function() 
     _perso.pos_goals[#_perso.pos_goals+1] = {x = 0, y = 0}
     _perso.pos_goals[#_perso.pos_goals] = _Perso.TabPos2Pos(perso.line, perso.column, _perso.tile_width, _perso.tile_height, _perso.pos_start)
-    print("pos start : ".._perso.pos_start.x..", ".._perso.pos_start.y)
     _perso.pos_goals[#_perso.pos_goals].x = _perso.pos_goals[#_perso.pos_goals].x+_perso.offset.x
     _perso.pos_goals[#_perso.pos_goals].y = _perso.pos_goals[#_perso.pos_goals].y+_perso.offset.y
     _perso.moving = true
@@ -96,7 +95,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     
     if (pMap.map_objects[_perso.line+1][_perso.column] == 6 or pMap.map_objects[_perso.line+1][_perso.column] == 7) then
       push_case = true
-      print("push case!!")
+      
       if _perso.line+2>_Perso.map.nb_tile_height then
         can = false
       elseif (pMap.map_objects[_perso.line+2][_perso.column] == 6 or pMap.map_objects[_perso.line+2][_perso.column] == 7) then
@@ -143,13 +142,19 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     push_case = false
     if (pMap.map_objects[_perso.line-1][_perso.column] == 6 or pMap.map_objects[_perso.line-1][_perso.column] == 7) then
       push_case = true
+      print("push case down!! : true")
       if _perso.line-2<1 then
         can = false
       elseif (pMap.map_objects[_perso.line-2][_perso.column] == 6 or pMap.map_objects[_perso.line-2][_perso.column] == 7) then
         can = false
       end
     end
+    
+    if (not can) then
+      
+    end
     if (can) then
+      
       _perso.line = _perso.line-1 
       _perso.scale_sign = -1
       _perso.image = _perso.images.down
@@ -278,16 +283,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     for i = 1, size do
       if (pObjects[i].line == _perso.line and pObjects[i].column == _perso.column and (pObjects[i].id == 6 or pObjects[i].id == 7)) then
         if (pObjects[i].under ~= nil) then
-          if (pObjects[i].under.id >= 8 and pObjects[i].under.id <= 11) then
-            if (not (pObjects[i].id == 6 and pObjects[i].under.id == 9)) then
-              pLvl.nb_buttons_succed = pLvl.nb_buttons_succed-1
-              print("box quit button")
-            end
-          end
-          pObjects[i].under.isunder = false
-          pObjects[#pObjects+1] = pObjects[i].under
-          pMap.map_objects[_perso.line][_perso.column] = pObjects[i].under.id
-          pObjects[i].under = nil
+          _perso.replace_under(pObjects, i, pLvl, pMap)
+          print("replace !!")
         end
         if (pMap.map_objects[pos_case.line][pos_case.column] ~= 0) then
           for j = 1, #pObjects do
@@ -324,10 +321,16 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         end
         
         if (pMap.map_set[pos_case.line][pos_case.column] == 3 and pObjects[i].id == 6)then
+          if (pMap.map_objects == pObjects[i].id) then
+            pMap.map_objects[_perso.line][_perso.column] = 0
+          end
           pObjects[i].id = 12
           pObjects[i].image = pMap.tile_set[12].image
           pMap.map_set[pos_case.line][pos_case.column] = -1
         elseif (pMap.map_set[pos_case.line][pos_case.column] == 3 and pObjects[i].id == 7)then
+          if (pMap.map_objects == pObjects[i].id) then
+            pMap.map_objects[_perso.line][_perso.column] = 0
+          end
           table.remove(pObjects, i)
           size = size-1
           break
@@ -369,6 +372,21 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     _perso.ease.fct = persoFallEase
     _perso.ease.offset.x = _perso.pos_goals[#_perso.pos_goals].x-_perso.pos.x
     _perso.ease.offset.y = _perso.pos_goals[#_perso.pos_goals].y-_perso.pos.y
+  end
+  
+  _perso.replace_under = function(pObjects, i, pLvl, pMap)
+    if (pObjects[i].under ~= nil) then
+      if (pObjects[i].under.id >= 8 and pObjects[i].under.id <= 11) then
+        if (not (pObjects[i].id == 6 and pObjects[i].under.id == 9)) then
+          pLvl.nb_buttons_succed = pLvl.nb_buttons_succed-1
+          print("box quit button")
+        end
+      end
+      pObjects[i].under.isunder = false
+      pObjects[#pObjects+1] = pObjects[i].under
+      pMap.map_objects[_perso.line][_perso.column] = pObjects[i].under.id
+      pObjects[i].under = nil
+    end
   end
   
   return _perso
