@@ -30,7 +30,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   _perso.pos_goals = {}
   
   _perso.moving = false
-  _perso.ease = {start = {x = 0, y = 0}, start_time = 0, time = 0, offset = {x = 0, y = 0}, duration = 50, fct = persoMovesEase}
+  _perso.ease = {start = {x = 0, y = 0}, start_time = 0, time = 0, offset = {x = 0, y = 0}, duration = 75, fct = persoMovesEase}
   
   _perso.map_start = map_start
   _perso.z = -10000
@@ -74,6 +74,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   end
   
   _perso.move = function() 
+    move:stop()
     move:play()
     _perso.pos_goals[#_perso.pos_goals+1] = {x = 0, y = 0}
     _perso.pos_goals[#_perso.pos_goals] = _Perso.TabPos2Pos(perso.line, perso.column, _perso.tile_width, _perso.tile_height, _perso.pos_start)
