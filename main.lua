@@ -25,6 +25,8 @@ Level = require("modules/Level")
 levelSelect = require("modules/LevelSelect")
 lunar = require("modules/Lunar")
 pause = require("modules/Pause")
+Ease = require("modules/Ease")
+
 ------------------------------------------------------
 --=                TABLE & VAR                     =--
 ------------------------------------------------------
@@ -76,7 +78,6 @@ end
 ------------------------------------------------------
 
 function love.update(dt)
-  
 	if currentScene == "MAINGAME" then
  
     lunar:update(dt)
@@ -97,10 +98,8 @@ function love.update(dt)
     for i = 1, #tiles_ground do
       tiles_ground[i].update(map_start)
       if (tiles_ground[i].line == 3 and tiles_ground[i].column == 5) then
-        --print("tiles_ground[i].z : "..tiles_ground[i].z.." l, c "..tiles_ground[i].line..", "..tiles_ground[i].column)
       end
       if (not tiles_ground[i].inhole.exist and tiles_ground[i].object_inhole) then
-        print("tiles_ground delte in hole: "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id)
         tiles_ground[i].object_inhole = false
         tiles_ground[i].inhole = {exist = false}
       end
@@ -119,7 +118,6 @@ function love.update(dt)
         camera.setMoving(tmp_pos)
       end
     end
-    
     if (not perso.moving and perso.falled) then
       loadLevel()
     end
@@ -245,7 +243,6 @@ function love.keypressed(key)
       end
       
       if (perso.falled) then
-        print("falled")
         return false
       end
       
@@ -257,7 +254,6 @@ function love.keypressed(key)
             if objects[i].line == prec_pos.line and objects[i].column == prec_pos.column then
               objects[i].id = objects[i].id+1
               Level.current_level.nb_buttons_succed = Level.current_level.nb_buttons_succed-1
-              print("box out button")
               map.map_objects[prec_pos.line][prec_pos.column] = objects[i].id
               objects[i].image = tile_set[objects[i].id].image
               break
@@ -271,7 +267,6 @@ function love.keypressed(key)
             if (objects[i].id == 9 or objects[i].id == 11) then
               objects[i].id = objects[i].id-1
               Level.current_level.nb_buttons_succed = Level.current_level.nb_buttons_succed+1
-              print("box in button")
               map.map_objects[perso.line][perso.column] = objects[i].id
               objects[i].image = tile_set[objects[i].id].image
             end
@@ -304,7 +299,6 @@ function love.keypressed(key)
             if tiles_ground[j].line == objects[i].line and tiles_ground[j].column == objects[i].column then
               tiles_ground[j].object_inhole = true
               tiles_ground[j].inhole = objects[i]
-              print("tiles_ground : "..tiles_ground[j].inhole.id)
               tiles_ground[j].inhole.exist = true
               break
             end
@@ -385,7 +379,6 @@ function loadLevel()
   
   Level.current_level.gate.image = Level.current_level.gate.images.close
   Level.current_level.nb_buttons_succed = 0
-  print("init buttons succed")
     
   local scale_x = 4
   local scale_y = scale_x
@@ -438,7 +431,6 @@ function loadLevel()
 end
 
 pos = Perso.TabPos2Pos(1, 1, Tile.tile_width, Tile.tile_height, {x = 534, y = 672})
-  print("sstart : "..pos.x..", "..pos.y)
 end
 
 function updateDrawList() 
@@ -495,36 +487,9 @@ function move_perso(wanted_nextpos, fctMove)
       CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column}, 6)
     end
   end
-  local fall = false
   local type_fall = ""
-  if (not inScreen(wanted_nextpos.line, wanted_nextpos.column)) then
-    fall = true
-    type_fall = "border"
-  elseif (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 0 or map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5) then 
-    fall = true
-    if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5)then type_fall = "hole" end
-  end
-  
-  if (fall) then
-    perso.column = wanted_nextpos.column
-    perso.line = wanted_nextpos.line
-    perso.pos_goals = {}
-    perso.move()
-    perso.pos.x = perso.pos_goals[1].x
-    perso.pos.y = perso.pos_goals[1].y
-    perso.ease.fct = _Tile.fallEase
-    table.remove(perso.pos_goals, 1)
-    perso.fall(type_fall)
-    for i = 1, #tiles_ground do
-      if (tiles_ground[i].line == wanted_nextpos.line and tiles_ground[i].column == wanted_nextpos.column) then
-        tiles_ground[i].object_inhole = true
-        tiles_ground[i].inhole = perso
-        
-        print("tiles_ground : "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id..", z : "..tiles_ground[i].z)
-        tiles_ground[i].inhole.exist = true
-      end
-    end
-    
+  if (shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
+    fallPerso(wanted_nextpos)
     return false
   end
   
@@ -547,34 +512,10 @@ function move_perso(wanted_nextpos, fctMove)
     end
     
     while (CanPass and glass_under) do
-      if (not inScreen(wanted_nextpos.line, wanted_nextpos.column)) then
-        fall = true
-        type_fall = "border"
-      elseif (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 0 or map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5) then 
-        fall = true
-        if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5)then type_fall = "hole" end
-      end
-      
-      if (fall) then
-        perso.column = wanted_nextpos.column
-        perso.line = wanted_nextpos.line
-        perso.pos_goals = {}
-        perso.move()
-        perso.pos.x = perso.pos_goals[1].x
-        perso.pos.y = perso.pos_goals[1].y
-        perso.ease.fct = _Tile.fallEase
-        table.remove(perso.pos_goals, 1)
-        perso.fall(type_fall)
-        for i = 1, #tiles_ground do
-          if (tiles_ground[i].line == wanted_nextpos.line and tiles_ground[i].column == wanted_nextpos.column) then
-            tiles_ground[i].object_inhole = true
-            tiles_ground[i].inhole = perso
-            
-            print("tiles_ground : "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id..", z : "..tiles_ground[i].z)
-            tiles_ground[i].inhole.exist = true
-          end
-        end
-        
+      local type_fall = ""
+      if (shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
+        print("22")
+        fallPerso(wanted_nextpos)
         return false
       end
       if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 4) then
@@ -594,13 +535,11 @@ function move_perso(wanted_nextpos, fctMove)
         end
       end
       if (diff_c == 0 and diff_l == 0)then 
-        print("end 1  diff l, c : "..diff_l..", "..diff_c)
         break 
       end
             
       CanPass = canPass({line = wanted_nextpos.line, column = wanted_nextpos.column}, perso.id)
       if (not CanPass )then
-        print("cant pass : "..wanted_nextpos.line..", "..wanted_nextpos.column)
       end
       if (CanPass) then
         if (map.map_objects[wanted_nextpos.line][wanted_nextpos.column] == 6 or map.map_objects[perso.line][wanted_nextpos.column] == 7) then
@@ -611,13 +550,40 @@ function move_perso(wanted_nextpos, fctMove)
         if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] ~= 4) then
           fctMove(map, objects, Level.current_level)
           CanPass = false
-          print("end diff l, c : "..diff_l..", "..diff_c)
           break
         end
-      end
-      
-      
+      end      
     end
-    
+    local type_fall = ""
+    if (glass_under and shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
+      print("11 : next  : "..wanted_nextpos.line..", "..wanted_nextpos.column)
+      fallPerso(wanted_nextpos)
+      return false
+    end
+  end
+end
+
+function shouldFall(line, column, type_fall)
+  if (not inScreen(line, column)) then
+    type_fall = "border"
+    return true
+  elseif (map.map_set[line][column] == 0 or map.map_set[line][column] == 5) then 
+    if (map.map_set[line][column] == 5)then type_fall = "hole" end
+    return true
+  end
+  return false
+end
+
+function fallPerso(wanted_nextpos)
+  perso.column = wanted_nextpos.column
+  perso.line = wanted_nextpos.line
+  perso.fall(type_fall)
+  for i = 1, #tiles_ground do
+    if (tiles_ground[i].line == wanted_nextpos.line and tiles_ground[i].column == wanted_nextpos.column) then
+      tiles_ground[i].object_inhole = true
+      tiles_ground[i].inhole = perso
+      
+      tiles_ground[i].inhole.exist = true
+    end
   end
 end

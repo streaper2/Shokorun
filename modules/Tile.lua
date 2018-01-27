@@ -133,9 +133,7 @@ _Tile.initTiles = function(pMapSet, pTiles, pNbTileWidth, pNbTileHeight, pTiledP
   _Tile.pattern.height = pTiledPattern.height
   
   local index = 1
-  
-  print("type : "..type(pMapSet))
-  
+    
   for i = 0,pNbTileHeight-1 do
     for j = 0,pNbTileWidth-1 do
       if (pMapSet[i+1][j+1] ~= 0) then
@@ -143,7 +141,6 @@ _Tile.initTiles = function(pMapSet, pTiles, pNbTileWidth, pNbTileHeight, pTiledP
         pos.y = pos_y-(j*(pTiledPattern.height/2))
         pattern_height = pTiledPattern.height
         pattern_width = pTiledPattern.width
-        print("pTiles[index] : "..type(pTiles[index]))
         pTiles[index].pos.x = pos.x
         pTiles[index].pos.y = pos.y
         index = index+1
