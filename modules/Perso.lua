@@ -45,7 +45,6 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
       perso.moving = true
     end
     _perso.easings[1].update(_perso.pos)
-    print("_perso.easings[1].dir : ".._perso.easings[1].duration)
     if (not _perso.easings[1].moving) then
       _perso.pos.x = _perso.pos_goals[1].x
       _perso.pos.y = _perso.pos_goals[1].y
@@ -127,6 +126,17 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         _perso.column = tmp_perso_pos.column
       end
     end
+    
+    
+    for i = 1, #pMap.map_objects do
+      for j = 1, #pMap.map_objects[i] do
+        io.write(pMap.map_objects[i][j].."|")
+      end
+      print("")
+    end
+    print("")
+    print("--------------")
+    print("")
   end
   
   _perso.down = function(pMap, pObjects, pLvl) 
@@ -311,7 +321,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         end
         
         if (pMap.map_set[pos_case.line][pos_case.column] == 3 and pObjects[i].id == 6)then
-          if (pMap.map_objects == pObjects[i].id) then
+          if (pMap.map_objects[_perso.line][_perso.column] == pObjects[i].id) then
             pMap.map_objects[_perso.line][_perso.column] = 0
           end
           pObjects[i].id = 12
@@ -319,7 +329,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
           pMap.map_set[pos_case.line][pos_case.column] = -1
           plouf:play()
         elseif (pMap.map_set[pos_case.line][pos_case.column] == 3 and pObjects[i].id == 7)then
-          if (pMap.map_objects == pObjects[i].id) then
+          if (pMap.map_objects[_perso.line][_perso.column] == pObjects[i].id) then
             pMap.map_objects[_perso.line][_perso.column] = 0
           end
           table.remove(pObjects, i)

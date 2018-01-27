@@ -514,7 +514,6 @@ function move_perso(wanted_nextpos, fctMove)
     while (CanPass and glass_under) do
       local type_fall = ""
       if (shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
-        print("22")
         fallPerso(wanted_nextpos)
         return false
       end
@@ -556,7 +555,6 @@ function move_perso(wanted_nextpos, fctMove)
     end
     local type_fall = ""
     if (glass_under and shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
-      print("11 : next  : "..wanted_nextpos.line..", "..wanted_nextpos.column)
       fallPerso(wanted_nextpos)
       return false
     end

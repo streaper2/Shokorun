@@ -108,7 +108,6 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
     _tile.pos.y = _tile.pos_goal.y
     _tile.setMoving({x = _tile.pos.x, y = _tile.pos.y + height+100}, 1000, Tile.fallEase)
     _tile.update_z(map_start)
-    print("_tile.z".._tile.z)
   end
   
   return _tile
