@@ -65,7 +65,10 @@ function love.load()
   loadLevel()
   pause:load()
   plouf = love.audio.newSource("musics/plouf1.ogg", "static")
-  move = love.audio.newSource("musics/move.ogg", "static")
+  move_grass = love.audio.newSource("musics/move-grass.ogg", "static")
+  move_grass:setPitch(1.5)
+  move_stone = love.audio.newSource("musics/move-stone.ogg", "static")
+  move_stone:setPitch(1)
 end
 
 ------------------------------------------------------
@@ -544,6 +547,36 @@ function move_perso(wanted_nextpos, fctMove)
     end
     
     while (CanPass and glass_under) do
+      if (not inScreen(wanted_nextpos.line, wanted_nextpos.column)) then
+        fall = true
+        type_fall = "border"
+      elseif (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 0 or map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5) then 
+        fall = true
+        if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 5)then type_fall = "hole" end
+      end
+      
+      if (fall) then
+        perso.column = wanted_nextpos.column
+        perso.line = wanted_nextpos.line
+        perso.pos_goals = {}
+        perso.move()
+        perso.pos.x = perso.pos_goals[1].x
+        perso.pos.y = perso.pos_goals[1].y
+        perso.ease.fct = _Tile.fallEase
+        table.remove(perso.pos_goals, 1)
+        perso.fall(type_fall)
+        for i = 1, #tiles_ground do
+          if (tiles_ground[i].line == wanted_nextpos.line and tiles_ground[i].column == wanted_nextpos.column) then
+            tiles_ground[i].object_inhole = true
+            tiles_ground[i].inhole = perso
+            
+            print("tiles_ground : "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id..", z : "..tiles_ground[i].z)
+            tiles_ground[i].inhole.exist = true
+          end
+        end
+        
+        return false
+      end
       if (map.map_set[wanted_nextpos.line][wanted_nextpos.column] == 4) then
         diff_c = perso.column
         diff_l = perso.line

@@ -73,9 +73,17 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     end
   end
   
-  _perso.move = function() 
-    move:stop()
-    move:play()
+  _perso.move = function()
+    if (inScreen(_perso.line, _perso.column)) then
+      if (_Perso.map.map_set[_perso.line][_perso.column] == 2) then
+        move_stone:stop()
+        move_stone:play()
+      else 
+        move_grass:stop()
+        move_grass:play()
+
+      end
+    end
     _perso.pos_goals[#_perso.pos_goals+1] = {x = 0, y = 0}
     _perso.pos_goals[#_perso.pos_goals] = _Perso.TabPos2Pos(perso.line, perso.column, _perso.tile_width, _perso.tile_height, _perso.pos_start)
     _perso.pos_goals[#_perso.pos_goals].x = _perso.pos_goals[#_perso.pos_goals].x+_perso.offset.x
