@@ -76,6 +76,7 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   _perso.move = function() 
     _perso.pos_goals[#_perso.pos_goals+1] = {x = 0, y = 0}
     _perso.pos_goals[#_perso.pos_goals] = _Perso.TabPos2Pos(perso.line, perso.column, _perso.tile_width, _perso.tile_height, _perso.pos_start)
+    print("pos start : ".._perso.pos_start.x..", ".._perso.pos_start.y)
     _perso.pos_goals[#_perso.pos_goals].x = _perso.pos_goals[#_perso.pos_goals].x+_perso.offset.x
     _perso.pos_goals[#_perso.pos_goals].y = _perso.pos_goals[#_perso.pos_goals].y+_perso.offset.y
     _perso.moving = true
@@ -349,10 +350,10 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     _perso.falled = true
     _perso.moving = false
     _perso.move()
-    local coeff = 1000
+    local coeff = 110
+  
     if (type_fall == "hole") then
-      coeff = 1000
-      print("holejf")
+      coeff = 110
     end
     if (type_fall == "border")then 
       if (_perso.line > _Perso.map.nb_tile_height or _perso.column > _Perso.map.nb_tile_width)then
@@ -360,8 +361,9 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
       end
     end
    
-    _perso.z = _perso.map_start.y-(_perso.pos_goals[#_perso.pos_goals].y*1*_Tile.scale.y)-coeff 
-     print("perso.z : ".._perso.z)
+    _perso.z = _perso.map_start.y-(_perso.pos_goals[#_perso.pos_goals].y*0.1*_Tile.scale.y)-coeff 
+     print("perso.z : ".._perso.z.." l, c ".._perso.line..", ".._perso.column..", start y : ".._perso.map_start.y)
+     
     _perso.pos_goals[#_perso.pos_goals].y = _perso.pos_goals[#_perso.pos_goals].y+1000
     _perso.ease.duration = 2000
     _perso.ease.fct = persoFallEase

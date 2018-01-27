@@ -46,9 +46,9 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
   
   _tile.falled = false
   _tile.update_z = function()
-    _tile.z = _tile.map_start.y-(_tile.pos.y*1*_Tile.scale.y)
+    _tile.z = _tile.map_start.y-(_tile.pos.y*0.1*_Tile.scale.y)
     if (_Tile.isBox(_tile.id)) then
-      _tile.z = _tile.map_start.y-(_tile.pos.y*1*_Tile.scale.y)-150
+      _tile.z = _tile.map_start.y-(_tile.pos.y*0.1*_Tile.scale.y)-15
     end
   end
   _tile.update = function(map_start)
@@ -106,6 +106,7 @@ _Tile.newTile = function(pLine, pColumn, pPos, pTile_base_pattern)
     _tile.pos.y = _tile.pos_goal.y
     _tile.setMoving({x = _tile.pos.x, y = _tile.pos.y + height+100}, 1000, Tile.fallEase)
     _tile.update_z(map_start)
+    print("_tile.z".._tile.z)
   end
   
   return _tile
@@ -120,8 +121,8 @@ _Tile.newTileBase = function(pPath_img_tile, pTile_id)
   return _tile_base
 end
 
-_Tile.initTiles = function(pMapSet, pTiles, pNbTileWidth, pNbTileHeight, pMapPos, pTiledPattern)
-  local pos_start = {x = pMapPos.x+((pNbTileWidth-1)*(pTiledPattern.width/2)), y = pMapPos.y+( ((pNbTileWidth+pNbTileHeight)/2-2) * pTiledPattern.height )+(pTiledPattern.height/2)}
+_Tile.initTiles = function(pMapSet, pTiles, pNbTileWidth, pNbTileHeight, pTiledPattern)
+  local pos_start = {x = 0, y = 0}
   local pos_x = pos_start.x
   local pos_y = pos_start.y
   local pos = {x = pos_start.x, y = pos_start.y}

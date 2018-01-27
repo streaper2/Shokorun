@@ -32,7 +32,6 @@ pause = require("modules/Pause")
 tiles_ground = {}
 objects = {}
 tile_set = {}
-map_pos = {x = 150, y = 200}
 map = {}
 perso = {}
 draw_list = {}
@@ -64,6 +63,7 @@ function love.load()
   levelSelect:load()
   loadLevel()
   pause:load()
+  
 end
 
 ------------------------------------------------------
@@ -71,7 +71,7 @@ end
 ------------------------------------------------------
 
 function love.update(dt)
-
+  
 	if currentScene == "MAINGAME" then
  
     lunar:update(dt)
@@ -91,6 +91,9 @@ function love.update(dt)
     
     for i = 1, #tiles_ground do
       tiles_ground[i].update(map_start)
+      if (tiles_ground[i].line == 3 and tiles_ground[i].column == 5) then
+        --print("tiles_ground[i].z : "..tiles_ground[i].z.." l, c "..tiles_ground[i].line..", "..tiles_ground[i].column)
+      end
       if (not tiles_ground[i].inhole.exist and tiles_ground[i].object_inhole) then
         print("tiles_ground delte in hole: "..", pos : "..tiles_ground[i].line..", "..tiles_ground[i].column..", id : "..", "..tiles_ground[i].id..", "..tiles_ground[i].inhole.id)
         tiles_ground[i].object_inhole = false
@@ -171,6 +174,7 @@ function love.draw()
           end
         end
         
+        love.graphics.rectangle("fill", 550, 683-15, 50, 50)
 
         love.graphics.pop()
         
@@ -375,7 +379,6 @@ function loadLevel()
   objects = {}
   tile_set = {}
 
-  map_pos = {x = 150, y = 200}
   map = {}
   perso = {}
   
@@ -404,7 +407,7 @@ function loadLevel()
     end
   end
   
-  map.pos_start = Tile.initTiles(map.map_set, tiles_ground, map.nb_tile_width, map.nb_tile_height, map_pos, {width = Tile.tile_width*Tile.scale.x, height = 16*Tile.scale.y})
+  map.pos_start = Tile.initTiles(map.map_set, tiles_ground, map.nb_tile_width, map.nb_tile_height, {width = Tile.tile_width*Tile.scale.x, height = 16*Tile.scale.y})
   map_start.x = map.pos_start.x+(Tile.tile_width*0.5*Tile.scale.x)
   map_start.y = map.pos_start.y+(Tile.tile_height*Tile.scale.y)
   
@@ -431,7 +434,10 @@ function loadLevel()
   Level.current_level.gate.pos.y = Level.current_level.gate.pos.y-Level.current_level.gate.image:getHeight()-Tile.tile_height*2-20
   
   if map.map_objects[perso.line][perso.column] == 9 or map.map_objects[perso.line][perso.column] == 11 then
-  end
+end
+
+pos = Perso.TabPos2Pos(1, 1, Tile.tile_width, Tile.tile_height, {x = 534, y = 672})
+  print("sstart : "..pos.x..", "..pos.y)
 end
 
 function updateDrawList() 
