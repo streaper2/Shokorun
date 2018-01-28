@@ -204,7 +204,10 @@ end
 ------------------------------------------------------
 
 function love.keypressed(key)
-	if currentScene  == "TITLESCREEN" then	
+  if (not inScreen(perso.line, perso.column) or perso.falled) then
+    return false
+	end
+  if currentScene  == "TITLESCREEN" then	
 		tScreen:controller(key)
 	elseif currentScene == "MAINMENU" then
     mainMenu:controller(key)
@@ -242,7 +245,7 @@ function love.keypressed(key)
         move_perso(wanted_nextpos, perso.left)
       end
       
-      if (perso.falled) then
+      if (perso.falled or not inScreen(perso.line, perso.column)) then
         return false
       end
       
