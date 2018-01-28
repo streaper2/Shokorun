@@ -65,6 +65,9 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
       if (_Perso.map.map_set[_perso.line][_perso.column] == 2) then
         move_stone:stop()
         move_stone:play()
+      elseif (_Perso.map.map_set[_perso.line][_perso.column] == 4) then
+        move_ice:stop()
+        move_ice:play()
       else 
         move_grass:stop()
         move_grass:play()

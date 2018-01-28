@@ -54,8 +54,6 @@ currentScene = "TITLESCREEN" -- permet de changer la scene
 --=                     LOAD                       =--
 ------------------------------------------------------
 
-
-
 function love.load()
   Font = love.graphics.newFont("images/font/Pixeled.ttf", 18)
   width = love.graphics.getWidth()
@@ -71,6 +69,8 @@ function love.load()
   move_grass:setPitch(1.5)
   move_stone = love.audio.newSource("musics/move-stone.ogg", "static")
   move_stone:setPitch(1)
+  move_ice = love.audio.newSource("musics/move-ice.ogg", "static")
+  move_ice:setPitch(1)
 end
 
 ------------------------------------------------------
