@@ -54,6 +54,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         _perso.easings[1].startEase()
         if (_perso.easings[1].duration == 1000) then
           _perso.falled = true
+          perso_fall:stop()
+          perso_fall:play()
         end
         _perso.moving = true
       end

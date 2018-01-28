@@ -73,7 +73,9 @@ function love.load()
   move_ice:setPitch(1)
   move_box = love.audio.newSource("musics/push.ogg", "static")
   move_box:setPitch(1)
-  move_box:setVolume(1.5)
+  move_box:setVolume(0.5)
+  perso_fall = love.audio.newSource("musics/fall.ogg", "static")
+  perso_fall:setPitch(1)
 end
 
 ------------------------------------------------------
