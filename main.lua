@@ -71,6 +71,9 @@ function love.load()
   move_stone:setPitch(1)
   move_ice = love.audio.newSource("musics/move-ice.ogg", "static")
   move_ice:setPitch(1)
+  move_box = love.audio.newSource("musics/push.ogg", "static")
+  move_box:setPitch(1)
+  move_box:setVolume(1.5)
 end
 
 ------------------------------------------------------

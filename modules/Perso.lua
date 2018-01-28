@@ -346,6 +346,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         else
           pObjects[i].setMoving(tmp_posgoal)
         end
+        move_box:stop()
+        move_box:play()
         
         pMap.map_objects[pos_case.line][pos_case.column] = pObjects[i].id
         if (pMap.map_objects[_perso.line][_perso.column] == pObjects[i].id)then pMap.map_objects[_perso.line][_perso.column] = 0 end
