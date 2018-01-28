@@ -71,11 +71,6 @@ function love.load()
   move_stone:setPitch(1)
   move_ice = love.audio.newSource("musics/move-ice.ogg", "static")
   move_ice:setPitch(1)
-  move_box = love.audio.newSource("musics/push.ogg", "static")
-  move_box:setPitch(1)
-  move_box:setVolume(0.5)
-  perso_fall = love.audio.newSource("musics/fall.ogg", "static")
-  perso_fall:setPitch(1)
 end
 
 ------------------------------------------------------
@@ -209,10 +204,7 @@ end
 ------------------------------------------------------
 
 function love.keypressed(key)
-  if (not inScreen(perso.line, perso.column) or perso.falled) then
-    return false
-	end
-  if currentScene  == "TITLESCREEN" then	
+	if currentScene  == "TITLESCREEN" then	
 		tScreen:controller(key)
 	elseif currentScene == "MAINMENU" then
     mainMenu:controller(key)
@@ -250,7 +242,7 @@ function love.keypressed(key)
         move_perso(wanted_nextpos, perso.left)
       end
       
-      if (perso.falled or not inScreen(perso.line, perso.column)) then
+      if (perso.falled) then
         return false
       end
       
