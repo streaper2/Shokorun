@@ -287,6 +287,9 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
   
   _perso.push_case = function (pos_case, pMap, pObjects, pLvl) 
     local size = #pObjects
+    if (_Perso.map.map_objects[pos_case.line][pos_case.column] == 6 or _Perso.map.map_objects[pos_case.line][pos_case.column] == 7) then
+      return false
+    end
     for i = 1, size do
       if (pObjects[i].line == _perso.line and pObjects[i].column == _perso.column and (pObjects[i].id == 6 or pObjects[i].id == 7)) then
         if (pObjects[i].under ~= nil) then
