@@ -54,6 +54,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         _perso.easings[1].startEase()
         if (_perso.easings[1].duration == 1000) then
           _perso.falled = true
+          perso_fall:stop()
+          perso_fall:play()
         end
         _perso.moving = true
       end
@@ -346,6 +348,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
         else
           pObjects[i].setMoving(tmp_posgoal)
         end
+        move_box:stop()
+        move_box:play()
         
         pMap.map_objects[pos_case.line][pos_case.column] = pObjects[i].id
         if (pMap.map_objects[_perso.line][_perso.column] == pObjects[i].id)then pMap.map_objects[_perso.line][_perso.column] = 0 end
