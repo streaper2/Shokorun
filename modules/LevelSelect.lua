@@ -106,6 +106,7 @@ function _levelSelect:draw()
                 love.graphics.circle("fill",love.graphics.getWidth()/2 + i * 25 - 25,_bg.y + 390,10, 50)
             end
             love.graphics.setColor(255,255, 255, 255)
+          love.graphics.print("Shift + rigth or left for change board", 140, 550)
     --debug
     --[[
     love.graphics.print("selector.posx : "..selector.posX,10,10,0,0.5,0.5)

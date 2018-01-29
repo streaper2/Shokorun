@@ -58,6 +58,7 @@ function _pause:draw()
     if _pause.menuSelect < 1 then
       _pause.menuSelect = #_pause.showMenu
     end
+    love.graphics.print("Press space to select ",240,550)
     --debug
     --love.graphics.print(_pause.showMenu[_pause.menuSelect],10,10)
   end

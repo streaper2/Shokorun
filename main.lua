@@ -178,9 +178,11 @@ function love.draw()
           end
         end
         
-        love.graphics.rectangle("fill", 550, 683-15, 50, 50)
-
+        love.graphics.print("level "..Level.index_level,15, 5) 
         love.graphics.pop()
+        
+        if (not pause.enable) then love.graphics.print("Press enter to pause ",240,550) end 
+        love.graphics.rectangle("fill", 550, 683-15, 50, 50)
         
         if (lunar_mode) then
           love.graphics.draw(lunar_ship.image, lunar_ship.pos.x, lunar_ship.pos.y, math.rad(lunar_ship.r), Tile.scale.x, Tile.scale.y, lunar_ship.image:getWidth(), lunar_ship.image:getHeight()/2)
