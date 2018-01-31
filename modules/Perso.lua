@@ -45,6 +45,9 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
       perso.moving = true
     end
     _perso.easings[1].update(_perso.pos)
+    if (_perso.falled) then
+      --print("_perso pos : ".._perso.pos.x..", ".._perso.pos.y)
+    end
     if (not _perso.easings[1].moving) then
       _perso.pos.x = _perso.pos_goals[1].x
       _perso.pos.y = _perso.pos_goals[1].y
@@ -52,9 +55,11 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
       _perso.column = _perso.easings[1].final_pos.column
       table.remove(_perso.pos_goals, 1)
       table.remove(_perso.easings, 1)
+      print("end !")
       if (#perso.pos_goals>0) then
         _perso.easings[1].startEase()
         if (_perso.easings[1].duration == 1000) then
+          print("fall start !")
           _perso.falled = true
           perso_fall:stop()
           perso_fall:play()
@@ -523,8 +528,8 @@ _Perso.newPerso = function(map_start, pLine, pColumn, pPathImages, p_Tile, pos_s
     _perso.z = _perso.map_start.y-(_perso.pos_goals[#_perso.pos_goals].y*0.1*_Tile.scale.y)-coeff 
       
     _perso.pos_goals[#_perso.pos_goals+1] = {x = _perso.pos_goals[#_perso.pos_goals].x, y = _perso.pos_goals[#_perso.pos_goals].y+1000}
-    print("before : "..type(easings[#_perso.easings-1]))
-    _perso.easings[#_perso.easings+1] = Ease.newEase(_perso.pos_goals[#_perso.pos_goals-1], _perso.pos_goals[#_perso.pos_goals], persoFallEase, 1000, easings[#_perso.easings-1].final_pos)
+    print("before : "..#_perso.easings)
+    _perso.easings[#_perso.easings+1] = Ease.newEase(_perso.pos_goals[#_perso.pos_goals-1], _perso.pos_goals[#_perso.pos_goals], persoFallEase, 1000, _perso.easings[#_perso.easings].final_pos)
     _perso.moving = true
     
     
