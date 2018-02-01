@@ -41,7 +41,7 @@ draw_list = {}
 
 map_start = {x = 0, y = 0}
 
-
+type_fall = ""
 
 backgroundColor = gradient {   -- degradé de couleur pour l'arrière plan
     direction = 'horizontal';
@@ -83,7 +83,6 @@ end
 ------------------------------------------------------
 
 function love.update(dt)
-  --print("pos perso : "..perso.line..", "..perso.column)
   if (Level.current_level.nb_buttons_succed == Level.current_level.nb_buttons and 
       (perso.line == Level.current_level.gate.line and perso.column == Level.current_level.gate.column)
     ) then
@@ -97,7 +96,7 @@ function love.update(dt)
     Level.current_level.gate.image = Level.current_level.gate.images.close
   end
 	if currentScene == "MAINGAME" then
- 
+    updateDrawList()
     lunar:update(dt)
     perso.update(dt)
     local nb_hole = 0
@@ -143,8 +142,9 @@ function love.update(dt)
     end
     if (not perso.moving and perso.falled) then
       loadLevel()
+      print("load #1")
     end
-    
+    if (not inScreen(perso.line, perso.column)) then return false end
     if map.map_objects[perso.line][perso.column] == 9 or map.map_objects[perso.line][perso.column] == 11 then
       for i = 1, #objects do
         if objects[i].line == perso.line and objects[i].column == perso.column then
@@ -161,9 +161,6 @@ function love.update(dt)
     end
     
     camera.update()
-    
-    updateDrawList()
-
 	end  
 	  
 end
@@ -367,7 +364,8 @@ function canPass(nextPos, id)
     nextPos.column>=1
     ) then
     local vec = {line = nextPos.line-perso.line, column = nextPos.column-perso.column}
-    if (Tile.isBox(map.map_objects[nextPos.line][nextPos.column]) and not inScreen(nextPos.line+vec.line, nextPos.column+vec.column)) then
+    local next_box_pos = {line = nextPos.line+vec.line, column = nextPos.column+vec.column}
+    if (Tile.isBox(map.map_objects[nextPos.line][nextPos.column]) and (not inScreen(next_box_pos.line, next_box_pos.column) or not canPass(next_box_pos, map.map_objects[nextPos.line][nextPos.column]))) then
       return false
     end
     
@@ -403,6 +401,7 @@ end
 ------------------------------------------------------
 
 function loadLevel()
+  lunar_mode = false
   tiles_ground = {}
   objects = {}
   tile_set = {}
@@ -520,9 +519,9 @@ function move_perso(wanted_nextpos, fctMove)
       CanPass = canPass({line = (wanted_nextpos.line-perso.line)*2+perso.line, column = (wanted_nextpos.column-perso.column)*2+perso.column}, 6)
     end
   end
-  local type_fall = ""
-  if (shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
-    fallPerso(wanted_nextpos)
+  
+  if (shouldFall(wanted_nextpos.line, wanted_nextpos.column)) then
+    fallPerso(wanted_nextpos, type_fall)
     return false
   end
   
@@ -544,26 +543,27 @@ function move_perso(wanted_nextpos, fctMove)
       end
     end
     
-    local type_fall = ""
-    if (glass_under and shouldFall(wanted_nextpos.line, wanted_nextpos.column, type_fall)) then
-      fallPerso(wanted_nextpos)
+    if (glass_under and shouldFall(wanted_nextpos.line, wanted_nextpos.column)) then
+      fallPerso(wanted_nextpos, type_fall)
       return false
     end
   end
 end
 
-function shouldFall(line, column, type_fall)
-  if (not inScreen(line, column)) then
+function shouldFall(pLine, pColumn)
+  
+  if (not inScreen(pLine, pColumn)) then
+    
     type_fall = "border"
     return true
-  elseif (map.map_set[line][column] == 0 or map.map_set[line][column] == 5) then 
-    if (map.map_set[line][column] == 5)then type_fall = "hole" end
+  elseif (map.map_set[pLine][pColumn] == 0 or map.map_set[pLine][pColumn] == 5) then 
+    if (map.map_set[pLine][pColumn] == 5)then type_fall = "hole" end
     return true
   end
   return false
 end
 
-function fallPerso(wanted_nextpos)
+function fallPerso(wanted_nextpos, type_fall)
   perso.column = wanted_nextpos.column
   perso.line = wanted_nextpos.line
   perso.fall(type_fall)
